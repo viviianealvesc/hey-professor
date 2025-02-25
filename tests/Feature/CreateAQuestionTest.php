@@ -25,6 +25,20 @@ it('should be able to create a nwe question bigger than 255 caracters', function
 
 it('should check if ends with question mark?', function () {
   
+    $user = App\models\User::factory()->create();
+    actingAs($user);
+ 
+ 
+    $request = Pest\Laravel\post(route('questions.store'), [
+        'question' => str_repeat('*', 10),
+    ]);
+ 
+    $request->assertSessionHasErrors([
+        'question' => 'Are you sure that is a question? It is missing the question mark in the end.'
+    ]);
+
+    assertDatabaseCount('questions', 0);
+
 });
 
 it('should have at least 10 characters', function () {
